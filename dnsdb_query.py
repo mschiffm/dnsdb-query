@@ -151,15 +151,19 @@ def time_parse(s):
     except ValueError:
         pass
 
-def filter_before(res_list, before_time):
+def filter_before(res_list, before_time, do_json):
     before_time = time_parse(before_time)
     new_res_list = []
 
     for res in res_list:
-        if 'time_first' in res:
-            if res['time_first'] < before_time:
+        if do_json is True:
+            res2 = json.loads(res)
+        else:
+            res2 = res
+        if 'time_first' in res2:
+            if res2['time_first'] < before_time:
                 new_res_list.append(res)
-        elif 'zone_time_first' in res:
+        elif 'zone_time_first' in res2:
             if res['zone_time_first'] < before_time:
                 new_res_list.append(res)
         else:
@@ -167,13 +171,17 @@ def filter_before(res_list, before_time):
 
     return new_res_list
 
-def filter_after(res_list, after_time):
+def filter_after(res_list, after_time, do_json):
     after_time = time_parse(after_time)
     new_res_list = []
 
     for res in res_list:
-        if 'time_last' in res:
-            if res['time_last'] > after_time:
+        if do_json is True:
+            res2 = json.loads(res)
+        else:
+            res2 = res
+        if 'time_last' in res2:
+            if res2['time_last'] > after_time:
                 new_res_list.append(res)
         elif 'zone_time_last' in res:
             if res['zone_time_last'] > after_time:
@@ -246,9 +254,9 @@ def main():
                 sys.exit(1)
             res_list.sort(key=lambda r: r[options.sort], reverse=options.reverse)
         if options.before:
-            res_list = filter_before(res_list, options.before)
+            res_list = filter_before(res_list, options.before, options.json)
         if options.after:
-            res_list = filter_after(res_list, options.after)
+            res_list = filter_after(res_list, options.after, options.json)
 
     for res in res_list:
         sys.stdout.write(fmt_func(res))
