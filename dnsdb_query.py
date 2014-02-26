@@ -164,7 +164,7 @@ def filter_before(res_list, before_time, do_json):
             if res2['time_first'] < before_time:
                 new_res_list.append(res)
         elif 'zone_time_first' in res2:
-            if res['zone_time_first'] < before_time:
+            if res2['zone_time_first'] < before_time:
                 new_res_list.append(res)
         else:
             new_res_list.append(res)
@@ -184,7 +184,7 @@ def filter_after(res_list, after_time, do_json):
             if res2['time_last'] > after_time:
                 new_res_list.append(res)
         elif 'zone_time_last' in res:
-            if res['zone_time_last'] > after_time:
+            if res2['zone_time_last'] > after_time:
                 new_res_list.append(res)
         else:
             new_res_list.append(res)
