@@ -193,26 +193,31 @@ def filter_after(res_list, after_time, do_json):
 
 def human_time(res_list):
     new_res_list = []
-    newline = False
+    #newline = False
 
     for res in res_list:
         res = json.loads(res)
+        for field in ("time_first", "zone_time_first", "time_last", "zone_time_last"):
+            if field in res:
+                res[field + "_iso8601"] = sec_to_text(res[field])
+            new_res_list.append(json.dumps(res))
+        return new_res_list
+"""
         if 'time_first' in res:
-            res['time_first'] = sec_to_text(res['time_first'])
+            res['time_first' + '_iso8601'] = sec_to_text(res['time_first'])
         elif 'zone_time_first' in res:
-            res['zone_time_first'] = sec_to_text(res['zone_time_first'])
+            res['zone_time_first' + '_iso8601'] = sec_to_text(res['zone_time_first'])
         if 'time_last' in res:
-            res['time_last'] = sec_to_text(res['time_last'])
+            res['time_last' + '_iso8601'] = sec_to_text(res['time_last'])
             newline = True
         elif 'zone_time_last' in res:
-            res['zone_time_last'] = sec_to_text(res['zone_time_last'])
+            res['zone_time_last' + '_iso8601'] = sec_to_text(res['zone_time_last'])
             newline = True
         new_res_list.append(json.dumps(res))
         if newline == True:
             new_res_list.append("\n")
-
     return new_res_list
-
+"""
 
 def main():
     global cfg
@@ -235,7 +240,7 @@ def main():
     parser.add_option('-l', '--limit', dest='limit', type='int', default=0,
         help='limit number of results')
     parser.add_option('-H', '--human_time', dest='htime', action='store_true', default=False,
-        help='when emiting json, write time in human readable format instead of unix epoch')
+        help='when emiting json, add an ISO 8601 human readable timestamp, set to UTC')
 
     parser.add_option('', '--before', dest='before', type='string', help='only output results seen before this time')
     parser.add_option('', '--after', dest='after', type='string', help='only output results seen after this time')
