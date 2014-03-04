@@ -191,6 +191,29 @@ def filter_after(res_list, after_time, do_json):
 
     return new_res_list
 
+def human_time(res_list):
+    new_res_list = []
+    newline = False
+
+    for res in res_list:
+        res = json.loads(res)
+        if 'time_first' in res:
+            res['time_first'] = sec_to_text(res['time_first'])
+        elif 'zone_time_first' in res:
+            res['zone_time_first'] = sec_to_text(res['zone_time_first'])
+        if 'time_last' in res:
+            res['time_last'] = sec_to_text(res['time_last'])
+            newline = True
+        elif 'zone_time_last' in res:
+            res['zone_time_last'] = sec_to_text(res['zone_time_last'])
+            newline = True
+        new_res_list.append(json.dumps(res))
+        if newline == True:
+            new_res_list.append("\n")
+
+    return new_res_list
+
+
 def main():
     global cfg
     global options
@@ -211,6 +234,8 @@ def main():
         help='output in JSON format')
     parser.add_option('-l', '--limit', dest='limit', type='int', default=0,
         help='limit number of results')
+    parser.add_option('-H', '--human_time', dest='htime', action='store_true', default=False,
+        help='when emiting json, write time in human readable format instead of unix epoch')
 
     parser.add_option('', '--before', dest='before', type='string', help='only output results seen before this time')
     parser.add_option('', '--after', dest='after', type='string', help='only output results seen after this time')
@@ -257,6 +282,8 @@ def main():
             res_list = filter_before(res_list, options.before, options.json)
         if options.after:
             res_list = filter_after(res_list, options.after, options.json)
+        if options.json and options.htime:
+            res_list = human_time(res_list)
 
     for res in res_list:
         sys.stdout.write(fmt_func(res))
