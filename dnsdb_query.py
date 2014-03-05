@@ -87,8 +87,9 @@ class DnsdbClient(object):
             sys.stderr.write(str(e) + '\n')
         return res
 
-def sec_to_text(ts):
-    return time.strftime('%Y-%m-%d %H:%M:%S -0000', time.gmtime(ts))
+def sec_to_text(ts, do_8601=False):
+
+    return time.strftime('%Y-%m-%dT%H:%M:%SZ', time.gmtime(ts))  if do_8601 else time.strftime('%Y-%m-%d %H:%M:%S -0000', time.gmtime(ts))
 
 def rrset_to_text(m):
     s = StringIO()
@@ -198,7 +199,7 @@ def human_time(res_list):
         res = json.loads(res)
         for field in ("time_first", "zone_time_first", "time_last", "zone_time_last"):
             if field in res:
-                res[field + "_iso8601"] = sec_to_text(res[field])
+                res[field + "_iso8601"] = sec_to_text(res[field], do_8601=True)
         new_res_list.append(json.dumps(res) + "\n")
     return new_res_list
 
