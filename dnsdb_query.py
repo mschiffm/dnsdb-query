@@ -193,31 +193,14 @@ def filter_after(res_list, after_time, do_json):
 
 def human_time(res_list):
     new_res_list = []
-    #newline = False
 
     for res in res_list:
         res = json.loads(res)
         for field in ("time_first", "zone_time_first", "time_last", "zone_time_last"):
             if field in res:
                 res[field + "_iso8601"] = sec_to_text(res[field])
-            new_res_list.append(json.dumps(res))
-        return new_res_list
-"""
-        if 'time_first' in res:
-            res['time_first' + '_iso8601'] = sec_to_text(res['time_first'])
-        elif 'zone_time_first' in res:
-            res['zone_time_first' + '_iso8601'] = sec_to_text(res['zone_time_first'])
-        if 'time_last' in res:
-            res['time_last' + '_iso8601'] = sec_to_text(res['time_last'])
-            newline = True
-        elif 'zone_time_last' in res:
-            res['zone_time_last' + '_iso8601'] = sec_to_text(res['zone_time_last'])
-            newline = True
-        new_res_list.append(json.dumps(res))
-        if newline == True:
-            new_res_list.append("\n")
+        new_res_list.append(json.dumps(res) + "\n")
     return new_res_list
-"""
 
 def main():
     global cfg
