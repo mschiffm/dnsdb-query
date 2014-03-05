@@ -197,10 +197,10 @@ def human_time(res_list):
 
     for res in res_list:
         res = json.loads(res)
-        for field in ("time_first", "zone_time_first", "time_last", "zone_time_last"):
+        for field in ('time_first', 'zone_time_first', 'time_last', 'zone_time_last'):
             if field in res:
-                res[field + "_iso8601"] = sec_to_text(res[field], do_8601=True)
-        new_res_list.append(json.dumps(res) + "\n")
+                res[field + '_iso8601'] = sec_to_text(res[field], do_8601=True)
+        new_res_list.append(json.dumps(res) + '\n')
     return new_res_list
 
 def main():
@@ -234,7 +234,11 @@ def main():
         parser.print_help()
         sys.exit(1)
 
-    cfg = parse_config(options.config)
+    try:
+         cfg = parse_config(options.config)
+    except IOError, e:
+         sys.stderr.write(e.message)
+         sys.exit(1)
 
     if not 'DNSDB_SERVER' in cfg:
         cfg['DNSDB_SERVER'] = DEFAULT_DNSDB_SERVER
